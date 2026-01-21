@@ -13,11 +13,14 @@ const buyClickPower = document.getElementById('buy-click-power');
 /* ==================================== */
 bitcoinsTotal.innerHTML = "0.00000000 BTC";
 moneyTotal.innerHTML = "R$ 0.00";
+
 let satoshis = 0;
 let real = 0;
 let clickPowerValue = 1;
-let ClickPowerPrice = 5;
+let clickPowerPrice = 5;
 
+clickPower.textContent = 'Click Power = ' + clickPowerValue;
+buyClickPower.textContent = 'Buy Click Power = R$ ' + clickPowerPrice;
 
 /* ==================================== */
 /* Render BTC and Real */
@@ -35,9 +38,15 @@ function renderReal () {
 };
 
 function renderPowerPrice () {
-    const powerPriceNumber = ClickPowerPrice;
+    const powerPriceNumber = clickPowerPrice;
     const powerPriceText = powerPriceNumber.toFixed(2);
     buyClickPower.textContent = `Buy Click Power = R$ ${powerPriceText}`
+}
+
+function renderPowerText () {
+    const powerNumber = clickPowerValue;
+    const powerText = powerNumber.toFixed(2);
+    clickPower.textContent = `Click Power = ${powerText}`;  
 }
 
 /* ==================================== */
@@ -67,10 +76,13 @@ btnSell.addEventListener('click', sellBTC);
 /* CLicker Upgrade */
 /* ==================================== */
 function upgradeClick(){
-    if (real >= ClickPowerPrice) {
-        real -= ClickPowerPrice;
+    if (real >= clickPowerPrice) {
+        real -= clickPowerPrice;
+        clickPowerPrice = clickPowerPrice * 1.5;
+        clickPowerValue = clickPowerValue * 1.1;
         renderReal();
         renderPowerPrice();
+        renderPowerText();
     }
 };
 
