@@ -7,65 +7,71 @@ const btnMiner = document.getElementById('mine-button');
 const btnSell = document.getElementById('sell-button');
 const clickPower = document.getElementById('click-power');
 const buyClickPower = document.getElementById('buy-click-power');
+const autoClickerTotal = document.getElementById("auto-clicker");
+const buyAutoClicker = document.getElementById("buy-auto-clicker");
 
 /* ==================================== */
-/* Global Variables */
+/* Global State */
 /* ==================================== */
-bitcoinsTotal.innerHTML = "0.00000000 BTC";
-moneyTotal.innerHTML = "R$ 0.00";
-
 let satoshis = 0;
 let real = 0;
+
 let clickPowerValue = 1;
 let clickPowerPrice = 5;
 
-clickPower.textContent = 'Click Power = ' + clickPowerValue;
-buyClickPower.textContent = 'Buy Click Power = R$ ' + clickPowerPrice;
+let autoClicker = 0;
+let autoClickerPrice = 50;
 
 /* ==================================== */
-/* Render BTC and Real */
+/* Initial Render */
+/* ==================================== */
+renderBTC();
+renderReal();
+renderPowerText();
+renderPowerPrice();
+renderAutoClicker();
+
+/* ==================================== */
+/* Render Functions */
 /* ==================================== */
 function renderBTC () {
-    const btcNumber = satoshis / 100_000_000;
-    const btcText = btcNumber.toFixed(8);
-    bitcoinsTotal.textContent = `${btcText} BTC`;
-};
+    const btc = satoshis / 100_000_000;
+    bitcoinsTotal.textContent = `${btc.toFixed(8)} BTC`;
+}
 
 function renderReal () {
-    const realNumber = real;
-    const realText = realNumber.toFixed(2);
-    moneyTotal.textContent = `R$ ${realText}`
-};
-
-function renderPowerPrice () {
-    const powerPriceNumber = clickPowerPrice;
-    const powerPriceText = powerPriceNumber.toFixed(2);
-    buyClickPower.textContent = `Buy Click Power = R$ ${powerPriceText}`
+    moneyTotal.textContent = `R$ ${real.toFixed(2)}`;
 }
 
 function renderPowerText () {
-    const powerNumber = clickPowerValue;
-    const powerText = powerNumber.toFixed(2);
-    clickPower.textContent = `Click Power = ${powerText}`;  
+    clickPower.textContent = `Click Power = ${clickPowerValue.toFixed(2)}`;
+}
+
+function renderPowerPrice () {
+    buyClickPower.textContent = `Buy Click Power = R$ ${clickPowerPrice.toFixed(2)}`;
+}
+
+function renderAutoClicker () {
+    autoClickerTotal.textContent = `Auto Clickers = ${autoClicker}`;
+    buyAutoClicker.textContent = `Buy Auto Clicker = R$ ${autoClickerPrice.toFixed(2)}`;
 }
 
 /* ==================================== */
-/* Manual CLicker */
+/* Manual Mining */
 /* ==================================== */
 function mineBTC() {
-    satoshis += 1 * clickPowerValue;
+    satoshis += clickPowerValue;
     renderBTC();
-};
+}
 
 btnMiner.addEventListener('click', mineBTC);
 
 /* ==================================== */
-/* Sell Bitcoins */
+/* Sell BTC */
 /* ==================================== */
 function sellBTC() {
-    real = satoshis / 3 + real;
+    real += satoshis / 3;
     satoshis = 0;
-    btcNumber = 0;
     renderBTC();
     renderReal();
 }
@@ -73,21 +79,44 @@ function sellBTC() {
 btnSell.addEventListener('click', sellBTC);
 
 /* ==================================== */
-/* CLicker Upgrade */
+/* Upgrade Click Power */
 /* ==================================== */
-function upgradeClick(){
+function upgradeClick() {
     if (real >= clickPowerPrice) {
         real -= clickPowerPrice;
-        clickPowerPrice = clickPowerPrice * 1.5;
-        clickPowerValue = clickPowerValue * 1.1;
+        clickPowerValue *= 1.1;
+        clickPowerPrice *= 1.1;
+
         renderReal();
-        renderPowerPrice();
         renderPowerText();
+        renderPowerPrice();
     }
-};
+}
 
 buyClickPower.addEventListener('click', upgradeClick);
 
 /* ==================================== */
-/* AutoClickers */
+/* Upgrade Auto Clicker */
 /* ==================================== */
+function upgradeAutoClicker() {
+    if (real >= autoClickerPrice) {
+        real -= autoClickerPrice;
+        autoClicker += 1;
+        autoClickerPrice *= 1.25;
+
+        renderReal();
+        renderAutoClicker();
+    }
+}
+
+buyAutoClicker.addEventListener('click', upgradeAutoClicker);
+
+/* ==================================== */
+/* GLOBAL GAME LOOP */
+/* ==================================== */
+setInterval(() => {
+    if (autoClicker > 0) {
+        satoshis += autoClicker * clickPowerValue;
+        renderBTC();
+    }
+}, 1000);
