@@ -23,6 +23,28 @@ let autoClicker = 0;
 let autoClickerPrice = 50;
 
 /* ==================================== */
+/* Load Game */
+/* ==================================== */
+
+
+function loadGame() {
+    const saved = localStorage.getItem("gameSave");
+    if (!saved) return;
+
+    const data = JSON.parse(saved);
+
+    satoshis = data.crypto;
+    real = data.money;
+    clickPowerValue = data.power;
+    autoClicker = data.auto;
+    clickPowerPrice = data.powerPrice;
+    autoClickerPrice = data.autoPrice;
+}
+
+loadGame();
+
+
+/* ==================================== */
 /* Initial Render */
 /* ==================================== */
 renderBTC();
@@ -120,3 +142,24 @@ setInterval(() => {
         renderBTC();
     }
 }, 1000);
+
+
+/* ==================================== */
+/* LocalStorage */
+/* ==================================== */
+
+function saveGame() {
+    const gameSave = {
+    crypto: satoshis,
+    money: real,
+    power: clickPowerValue,
+    auto: autoClicker,
+    powerPrice: clickPowerPrice,
+    autoPrice: autoClickerPrice
+    };
+    localStorage.setItem("gameSave", JSON.stringify(gameSave));
+};
+
+setInterval(saveGame, 5000);
+
+window.addEventListener("beforeunload", saveGame);
