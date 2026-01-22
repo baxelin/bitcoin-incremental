@@ -155,7 +155,8 @@ function saveGame() {
     power: clickPowerValue,
     auto: autoClicker,
     powerPrice: clickPowerPrice,
-    autoPrice: autoClickerPrice
+    autoPrice: autoClickerPrice,
+    lastSaveTime: Date.now()
     };
     localStorage.setItem("gameSave", JSON.stringify(gameSave));
 };
